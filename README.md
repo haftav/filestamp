@@ -1,0 +1,3 @@
+# Filestamp
+
+Declarative file scaffolding
