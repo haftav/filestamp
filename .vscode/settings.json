@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "eslintrc.json": "jsonc"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
