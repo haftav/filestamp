@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 import prompts, { PromptObject } from 'prompts';
 import invariant from 'tiny-invariant';
+import path from 'path';
+
+console.log('CWD', process.cwd());
+const WORKING_DIRECTORY = process.cwd();
 
 interface InitialArgs {
   [argName: string]: unknown;
@@ -55,6 +58,11 @@ function create(argv: InitialArgs) {
   const argsObject = stripIgnoredArgs(argv);
 
   async function main() {
+    // find user config, get default function
+    const userConfig = await import(path.resolve(WORKING_DIRECTORY, 'filestamp.config.js'));
+    console.log('user config', userConfig);
+
+    // TODO: pass user commands in here
     const command = await getCommand(argsObject);
 
     invariant(typeof command === 'string', 'Command must be a string.');
@@ -72,7 +80,7 @@ function create(argv: InitialArgs) {
   }
 
   function createPropCollector() {
-    return function collectProps(fn: () => PromptObject[]) {
+    return async function collectProps(fn: () => PromptObject[]) {
       // read all variables from CLI
       const cliVariables = getCommandLineVariables(argsObject);
 
@@ -83,7 +91,7 @@ function create(argv: InitialArgs) {
       const userPrompts = fn();
 
       // Execute prompts -> will skip if all prompts overriden through CLI
-      const answers = prompts(userPrompts);
+      const answers = await prompts(userPrompts);
 
       return answers;
     };
@@ -173,4 +181,4 @@ const { main, collectProps, filestamp } = create(argv as InitialArgs);
 
 main();
 
-export { collectProps, filestamp };
+export { filestamp, collectProps };
