@@ -22,24 +22,6 @@ interface Command {
 }
 
 // hardcoded right now
-const userPrompts: PromptObject[] = [
-  {
-    type: 'text',
-    name: 'name',
-    message: 'What is the name of your component?',
-  },
-  {
-    type: 'number',
-    name: 'age',
-    message: 'How old are you?',
-  },
-  {
-    type: 'text',
-    name: 'about',
-    message: 'Tell something about yourself',
-    initial: 'Why should I?',
-  },
-];
 
 function init() {
   return yargs
@@ -59,18 +41,17 @@ function create(argv: InitialArgs) {
 
   async function main() {
     // find user config, get default function
-    const userConfig = await import(path.resolve(WORKING_DIRECTORY, 'filestamp.config.js'));
-    console.log('user config', userConfig);
+    // TODO: need to add error handling
+    const importedConfig = await import(path.resolve(WORKING_DIRECTORY, 'filestamp.config.js'));
+    const configObject = await importedConfig.default();
+    const { commands, handleCommand } = configObject;
 
-    // TODO: pass user commands in here
-    const command = await getCommand(argsObject);
+    const command = await getCommand(argsObject, commands);
 
     invariant(typeof command === 'string', 'Command must be a string.');
 
     // TODO: change this to use function exported from user config
     handleCommand(command);
-
-    return argv;
   }
 
   function createFilestamp() {
@@ -80,7 +61,7 @@ function create(argv: InitialArgs) {
   }
 
   function createPropCollector() {
-    return async function collectProps(fn: () => PromptObject[]) {
+    return async function collectProps(fn?: () => PromptObject[]) {
       // read all variables from CLI
       const cliVariables = getCommandLineVariables(argsObject);
 
@@ -88,7 +69,7 @@ function create(argv: InitialArgs) {
       prompts.override(cliVariables);
 
       // Get list of user prompst
-      const userPrompts = fn();
+      const userPrompts = fn ? fn() : [];
 
       // Execute prompts -> will skip if all prompts overriden through CLI
       const answers = await prompts(userPrompts);
@@ -121,10 +102,7 @@ function stripIgnoredArgs(argv: InitialArgs): Args {
   return output;
 }
 
-// hardcoding commands for now - these will eventually be defined in config file
-const commands: Command[] = [{ title: 'Component', value: 'component' }];
-
-async function getCommand(argsObject: Args) {
+async function getCommand(argsObject: Args, commands: Command[]) {
   if ('command' in argsObject) {
     return argsObject.command;
   }
@@ -132,7 +110,7 @@ async function getCommand(argsObject: Args) {
   const { command } = await prompts({
     type: 'select',
     name: 'command',
-    choices: commands, // TODO: make dynamic
+    choices: commands,
     message: 'Please choose command you want to run',
   });
 
@@ -161,15 +139,15 @@ function getCommandLineVariables(argsObject: Args): CommandLineVariables {
 
 // import filestamp from 'filestamp'
 
-async function handleCommand(command: string) {
-  if (command === 'component') {
-    const props = await collectProps(() => userPrompts);
-    filestamp('./components', props);
-  }
-  if (command === 'hook') {
-    filestamp('./hooks');
-  }
-}
+// async function handleCommand(command: string) {
+//   if (command === 'component') {
+//     const props = await collectProps(() => userPrompts);
+//     filestamp('./components', props);
+//   }
+//   if (command === 'hook') {
+//     filestamp('./hooks');
+//   }
+// }
 
 /*
 ===========================================================================
