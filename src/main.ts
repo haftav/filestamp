@@ -4,6 +4,9 @@ import prompts, { PromptObject } from 'prompts';
 import invariant from 'tiny-invariant';
 import path from 'path';
 
+import { Command, Config } from './types';
+import { isConfigObject } from './utils';
+
 const WORKING_DIRECTORY = process.cwd();
 
 interface InitialArgs {
@@ -14,13 +17,6 @@ interface InitialArgs {
 
 type Args = Omit<InitialArgs, '_' | '$0'>;
 type CommandLineVariables = Omit<Args, 'command'>;
-
-interface Command {
-  title: string;
-  value: string;
-}
-
-// hardcoded right now
 
 function init() {
   return yargs
@@ -42,8 +38,11 @@ function create(argv: InitialArgs) {
     // find user config, get default function
     // TODO: need to add error handling
     const importedConfig = await import(path.resolve(WORKING_DIRECTORY, 'filestamp.config.js'));
-    const configObject = await importedConfig.default();
-    const { commands, handleCommand } = configObject;
+    const configObject = (await importedConfig.default()) as Config;
+    const { commands = [], handleCommand } = configObject;
+
+    invariant(commands.length > 0, 'Must have at least one command to run.');
+    invariant(isConfigObject(configObject), 'Please use valid config object.');
 
     const command = await getCommand(argsObject, commands);
 
