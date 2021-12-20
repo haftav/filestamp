@@ -4,7 +4,6 @@ import prompts, { PromptObject } from 'prompts';
 import invariant from 'tiny-invariant';
 import path from 'path';
 
-console.log('CWD', process.cwd());
 const WORKING_DIRECTORY = process.cwd();
 
 interface InitialArgs {

@@ -28,7 +28,6 @@ const componentPrompts = [
 async function handleCommand(command) {
   if (command === 'component') {
     const props = await collectProps(() => componentPrompts);
-    console.log('props', props);
     filestamp('./src', props, Component);
   }
 }
