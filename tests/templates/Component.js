@@ -1,4 +1,8 @@
-module.exports = function Component({ props }) {
+/* eslint-disable */
+const { createFile } = require('../../dist/main');
+
+function Component({ props }) {
+  console.log('props', props);
   return `
   import * as React from 'react';
   
@@ -6,4 +10,6 @@ module.exports = function Component({ props }) {
 
   export default ${props.name};
   `;
-};
+}
+
+module.exports = createFile(Component);

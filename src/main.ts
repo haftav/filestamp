@@ -6,6 +6,7 @@ import path from 'path';
 
 import { Command, Config } from './types';
 import { isConfigObject } from './utils';
+import createFilestamp, { createFile } from './filestamp';
 
 const WORKING_DIRECTORY = process.cwd();
 
@@ -36,11 +37,17 @@ function create(argv: InitialArgs) {
 
   async function main() {
     // find user config, get default function
-    // TODO: need to add error handling
-    const importedConfig = await import(path.resolve(WORKING_DIRECTORY, 'filestamp.config.js'));
-    const configObject = (await importedConfig.default()) as Config;
+
+    let configObject;
+    try {
+      const importedConfig = await import(path.resolve(WORKING_DIRECTORY, 'filestamp.config.js'));
+      configObject = (await importedConfig.default()) as Config;
+    } catch (err) {
+      throw new Error(`Error importing config: ${err}`);
+    }
     const { commands = [], handleCommand } = configObject;
 
+    // maybe just warn here
     invariant(commands.length > 0, 'Must have at least one command to run.');
     invariant(isConfigObject(configObject), 'Please use valid config object.');
 
@@ -52,36 +59,24 @@ function create(argv: InitialArgs) {
     handleCommand(command);
   }
 
-  function createFilestamp() {
-    return function filestamp(currentPath: string, ...args: Array<unknown>) {
-      // TODO: add stuff
-    };
+  async function collectProps(fn?: () => PromptObject[]) {
+    // read all variables from CLI
+    const cliVariables = getCommandLineVariables(argsObject);
+
+    // Override any prompts with variables that were supplied through CLI
+    prompts.override(cliVariables);
+
+    // Get list of user prompst
+    const userPrompts = fn ? fn() : [];
+
+    // Execute prompts -> will skip if all prompts overriden through CLI
+    const answers = await prompts(userPrompts);
+
+    return answers;
   }
-
-  function createPropCollector() {
-    return async function collectProps(fn?: () => PromptObject[]) {
-      // read all variables from CLI
-      const cliVariables = getCommandLineVariables(argsObject);
-
-      // Override any prompts with variables that were supplied through CLI
-      prompts.override(cliVariables);
-
-      // Get list of user prompst
-      const userPrompts = fn ? fn() : [];
-
-      // Execute prompts -> will skip if all prompts overriden through CLI
-      const answers = await prompts(userPrompts);
-
-      return answers;
-    };
-  }
-
-  const collectProps = createPropCollector();
-  const filestamp = createFilestamp();
 
   return {
     main,
-    filestamp,
     collectProps,
   };
 }
@@ -115,9 +110,6 @@ async function getCommand(argsObject: Args, commands: Command[]) {
   return command;
 }
 
-type File = () => void;
-type Folder = () => void;
-
 // strip out any 'command' option supplied by user so we're left with just variable arguments
 function getCommandLineVariables(argsObject: Args): CommandLineVariables {
   const output = { ...argsObject } as CommandLineVariables;
@@ -129,32 +121,11 @@ function getCommandLineVariables(argsObject: Args): CommandLineVariables {
   return output;
 }
 
-/*
-===========================================================================
-*/
-
-// EXAMPLE USER CODE
-
-// import filestamp from 'filestamp'
-
-// async function handleCommand(command: string) {
-//   if (command === 'component') {
-//     const props = await collectProps(() => userPrompts);
-//     filestamp('./components', props);
-//   }
-//   if (command === 'hook') {
-//     filestamp('./hooks');
-//   }
-// }
-
-/*
-===========================================================================
-*/
-
 const argv = init();
 
-const { main, collectProps, filestamp } = create(argv as InitialArgs);
+const { main, collectProps } = create(argv as InitialArgs);
+const filestamp = createFilestamp();
 
 main();
 
-export { filestamp, collectProps };
+export { filestamp, createFile, collectProps };
