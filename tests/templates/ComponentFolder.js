@@ -1,5 +1,6 @@
 /* eslint-disable */
 const { createFile } = require('../../dist/main');
+import { createFolder } from '../../dist/filestamp';
 
 function Component(props) {
   return `
@@ -11,4 +12,8 @@ function Component(props) {
   `;
 }
 
-module.exports = createFile(Component, (props) => `${props.name}.jsx`);
+function Folder({ props }) {
+  return createFolder[(ComponentFile(), HookFile(), StyleFile(), TestFile())];
+}
+
+module.exports = createFile(Component);
