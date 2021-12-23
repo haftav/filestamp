@@ -6,7 +6,7 @@ import path from 'path';
 
 import { Command, Config } from './types';
 import { isConfigObject } from './utils';
-import createFilestamp, { createFile } from './filestamp';
+import createFilestamp, { createFile, createFolder } from './filestamp';
 
 const WORKING_DIRECTORY = process.cwd();
 
@@ -59,6 +59,7 @@ function create(argv: InitialArgs) {
     handleCommand(command);
   }
 
+  // TODO: allow array parameter
   async function collectProps(fn?: () => PromptObject[]) {
     // read all variables from CLI
     const cliVariables = getCommandLineVariables(argsObject);
@@ -66,7 +67,7 @@ function create(argv: InitialArgs) {
     // Override any prompts with variables that were supplied through CLI
     prompts.override(cliVariables);
 
-    // Get list of user prompst
+    // Get list of user prompts
     const userPrompts = fn ? fn() : [];
 
     // Execute prompts -> will skip if all prompts overriden through CLI
@@ -128,4 +129,4 @@ const filestamp = createFilestamp();
 
 main();
 
-export { filestamp, createFile, collectProps };
+export { filestamp, createFile, createFolder, collectProps };

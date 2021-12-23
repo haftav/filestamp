@@ -1,10 +1,15 @@
 /* eslint-disable */
+
 // TODO: figure out eslint issues
 const { filestamp, collectProps } = require('../dist/main');
 
 const Component = require('./templates/Component');
+const Folder = require('./templates/Folder');
 
-const commands = [{ title: 'Component', value: 'component' }];
+const commands = [
+  { title: 'Component', value: 'component' },
+  { title: 'Folder', value: 'folder' },
+];
 
 const componentPrompts = [
   {
@@ -29,6 +34,17 @@ async function handleCommand(command) {
   if (command === 'component') {
     const props = await collectProps(() => componentPrompts);
     filestamp('./samples', props, Component);
+  }
+  if (command === 'folder') {
+    const props = await collectProps(() => [
+      {
+        type: 'text',
+        name: 'name',
+        message: 'What is the name of your folder?',
+      },
+    ]);
+
+    filestamp('./samples', props, Folder);
   }
 }
 
