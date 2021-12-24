@@ -6,7 +6,7 @@ import path from 'path';
 
 import { Command, Config } from './types';
 import { isConfigObject } from './utils';
-import createFilestamp, { createFile, createFolder } from './filestamp';
+import createFilestamp from './filestamp';
 
 const WORKING_DIRECTORY = process.cwd();
 
@@ -129,4 +129,5 @@ const filestamp = createFilestamp();
 
 main();
 
-export { filestamp, createFile, createFolder, collectProps };
+export { createFile, createFolder } from './filestamp';
+export { filestamp, collectProps };

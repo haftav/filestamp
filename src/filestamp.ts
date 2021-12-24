@@ -4,12 +4,13 @@ import { stripIndent } from 'common-tags';
 
 const cwd = process.cwd();
 
-interface File {
-  (props: unknown): any;
+export interface File<P = any> {
+  (currentDirectory: string, props: P): void;
   type: 'FILE';
 }
-interface Folder {
-  (props: unknown): any;
+
+export interface Folder<P = any> {
+  (currentDirectory: string, props: P): { children: any[] | null; folderName: string };
   type: 'FOLDER';
 }
 
@@ -17,7 +18,11 @@ export default function createFilestamp() {
   let currentDepth = 0;
   const MAX_DEPTH = 9;
 
-  return async function filestamp(directory: string, props: unknown, creator: any) {
+  return async function filestamp(
+    directory: string,
+    props: unknown,
+    createFileOrFolder: File | Folder
+  ) {
     if (currentDepth >= MAX_DEPTH) {
       throw new Error('Possible infinite loop reached, throwing error');
     }
@@ -27,12 +32,12 @@ export default function createFilestamp() {
     console.log('current depth', currentDepth);
     console.log('pathString', currentDirectory);
 
-    if (creator.type === 'FILE') {
-      creator(currentDirectory, props);
+    if (createFileOrFolder.type === 'FILE') {
+      createFileOrFolder(currentDirectory, props);
     }
-    if (creator.type === 'FOLDER') {
+    if (createFileOrFolder.type === 'FOLDER') {
       // this is where i think i have to recurse
-      const { children, folderName } = creator(currentDirectory, props);
+      const { children, folderName } = createFileOrFolder(currentDirectory, props);
 
       currentDepth += 1;
 
@@ -47,11 +52,11 @@ export default function createFilestamp() {
   };
 }
 
-export function createFile(
-  contentCreator: (props: any) => string,
-  nameCreator: (props: any) => string
+export function createFile<P>(
+  contentCreator: (props: P) => string,
+  nameCreator: (props: P) => string
 ) {
-  const fn = (currentDirectory: string, props: any): void => {
+  const fn: File = (currentDirectory, props: P) => {
     // get file content
     const fileContent = stripIndent`${contentCreator(props)}`;
     const fileName = nameCreator(props);
@@ -83,8 +88,11 @@ export function createFile(
   return fn;
 }
 
-export function createFolder(folderChildren: any[] | null, nameCreator: (props: any) => string) {
-  const fn = (currentDirectory: string, props: any): { children: any; folderName: string } => {
+export function createFolder<FolderChildren, P>(
+  folderChildren: FolderChildren[] | null,
+  nameCreator: (props: P) => string
+) {
+  const fn: Folder = (currentDirectory: string, props: P) => {
     const folderName = nameCreator(props);
 
     const folderPath = path.join(currentDirectory, folderName);
