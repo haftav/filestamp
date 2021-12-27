@@ -5,7 +5,7 @@ import { stripIndent } from 'common-tags';
 const cwd = process.cwd();
 
 export interface File<P = any> {
-  (currentDirectory: string, props: P): { hasError: boolean };
+  (currentDirectory: string, props: P): void;
   type: 'FILE';
 }
 
@@ -18,7 +18,7 @@ export default function createFilestamp() {
   let currentDepth = 0;
   const MAX_DEPTH = 9;
 
-  return async function filestamp<P = any>(
+  return function filestamp<P = any>(
     directory: string,
     props: P,
     createFileOrFolder: File | Folder
@@ -30,12 +30,9 @@ export default function createFilestamp() {
     const currentDirectory = path.resolve(cwd, directory);
 
     if (createFileOrFolder.type === 'FILE') {
-      const { hasError } = createFileOrFolder(currentDirectory, props);
-
-      if (hasError) {
-        return;
-      }
+      createFileOrFolder(currentDirectory, props);
     }
+
     if (createFileOrFolder.type === 'FOLDER') {
       // this is where i think i have to recurse
       const { children, folderName } = createFileOrFolder(currentDirectory, props);
@@ -44,6 +41,10 @@ export default function createFilestamp() {
 
       if (!children) {
         return;
+      }
+
+      if (!children.every((child) => child.type === 'FOLDER' || child.type === 'FILE')) {
+        throw new Error('Not all children are wrapped in a createFile or createFolder call.');
       }
 
       children.forEach((child) => {
@@ -75,11 +76,8 @@ export function createFile<P = any>(
       // create file with content depending on previous options
       console.log(`Writing file at ${filePath}`);
       fs.writeFileSync(filePath, fileContent);
-
-      return { hasError: false };
     } else {
-      console.log(`File already exists at ${filePath}.`);
-      return { hasError: true };
+      throw new Error(`File already exists at ${filePath}.`);
     }
   };
 
