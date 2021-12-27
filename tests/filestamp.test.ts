@@ -4,7 +4,7 @@ import { stripIndent } from 'common-tags';
 
 import { removeTestFiles } from './utils';
 
-import createFilestamp, { createFile, createFolder } from '../dist/filestamp';
+import createScaffolda, { createFile, createFolder } from '../dist/scaffolda';
 
 const directoryName = '/samples';
 const pathToDirectory = path.join(__dirname, directoryName);
@@ -75,13 +75,13 @@ const nestedFolders = createFolder(
   () => 'one'
 );
 
-const filestamp = createFilestamp();
+const scaffolda = createScaffolda();
 
-describe('Filestamp tests', () => {
+describe('Scaffolda tests', () => {
   const props = { name: 'Test' };
 
   it('Creates file with specified content and path', async () => {
-    filestamp('./tests/samples', props, componentFile);
+    scaffolda('./tests/samples', props, componentFile);
 
     const filePath = path.join(__dirname, './samples/Test.jsx');
     const fileExists = fs.existsSync(filePath);
@@ -104,7 +104,7 @@ describe('Filestamp tests', () => {
   it('Creates empty folders', () => {
     const emptyFolder = createFolder(null, (props) => `${props.name}`);
 
-    filestamp('./tests/samples', props, emptyFolder);
+    scaffolda('./tests/samples', props, emptyFolder);
 
     const folderPath = path.join(__dirname, './samples/Test');
     const folderExists = fs.existsSync(folderPath);
@@ -121,7 +121,7 @@ describe('Filestamp tests', () => {
       (props) => `${props.name}`
     );
 
-    filestamp('./tests/samples', props, folderWithComponents);
+    scaffolda('./tests/samples', props, folderWithComponents);
 
     const folderPath = path.join(__dirname, './samples/Test');
     const folderExists = fs.existsSync(folderPath);
@@ -140,7 +140,7 @@ describe('Filestamp tests', () => {
       (props) => `${props.name}`
     );
 
-    filestamp('./tests/samples', props, folderWithComponentsAndSubfolders);
+    scaffolda('./tests/samples', props, folderWithComponentsAndSubfolders);
 
     const folderPath = path.join(__dirname, './samples/Test');
     const folderExists = fs.existsSync(folderPath);
@@ -157,7 +157,7 @@ describe('Filestamp tests', () => {
   it('Lets you nest content in content templates', () => {
     const folder = createFolder([hookFile], (props) => `${props.name}`);
 
-    filestamp('./tests/samples', props, folder);
+    scaffolda('./tests/samples', props, folder);
 
     const filePath = path.join(__dirname, './samples/Test/hookFile.js');
     const fileExists = fs.existsSync(filePath);
@@ -184,7 +184,7 @@ describe('Filestamp tests', () => {
 
     const folder = createFolder([componentFile], (props) => `${props.name}`);
 
-    filestamp('./tests/samples', props, folder);
+    scaffolda('./tests/samples', props, folder);
 
     const filePath = path.join(__dirname, './samples/Test/Test.jsx');
     const fileExists = fs.existsSync(filePath);
@@ -198,7 +198,7 @@ describe('Filestamp tests', () => {
 
     const folder = createFolder([componentFile], (props) => `${props.name}`);
 
-    expect(() => filestamp('./tests/samples', props, folder)).toThrow();
+    expect(() => scaffolda('./tests/samples', props, folder)).toThrow();
   });
 
   it('Fails if folder contains invalid content', () => {
@@ -207,10 +207,10 @@ describe('Filestamp tests', () => {
       (props) => `${props.name}`
     );
 
-    expect(() => filestamp('./tests/samples', props, folderWithComponents)).toThrow();
+    expect(() => scaffolda('./tests/samples', props, folderWithComponents)).toThrow();
   });
 
   it('Fails on possible infinite recursion', () => {
-    expect(() => filestamp('./tests/samples', props, nestedFolders)).toThrow();
+    expect(() => scaffolda('./tests/samples', props, nestedFolders)).toThrow();
   });
 });

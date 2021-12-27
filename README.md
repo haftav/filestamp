@@ -1,3 +1,3 @@
-# Filestamp
+# Scaffolda
 
 Declarative file scaffolding

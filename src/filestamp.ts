@@ -14,11 +14,11 @@ export interface Folder<P = any> {
   type: 'FOLDER';
 }
 
-export default function createFilestamp() {
+export default function createScaffolda() {
   let currentDepth = 0;
   const MAX_DEPTH = 9;
 
-  return function filestamp<P = any>(
+  return function scaffolda<P = any>(
     directory: string,
     props: P,
     createFileOrFolder: File | Folder
@@ -48,7 +48,7 @@ export default function createFilestamp() {
       }
 
       children.forEach((child) => {
-        filestamp(path.join(currentDirectory, folderName), props, child);
+        scaffolda(path.join(currentDirectory, folderName), props, child);
       });
     }
   };

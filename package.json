@@ -1,10 +1,10 @@
 {
-  "name": "filestamp",
+  "name": "scaffolda",
   "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
   "bin": {
-    "filestamp": "dist/main.js"
+    "scaffolda": "dist/main.js"
   },
   "types": "dist/main.d.ts",
   "volta": {

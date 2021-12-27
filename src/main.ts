@@ -6,7 +6,7 @@ import path from 'path';
 
 import { Command, Config } from './types';
 import { isConfigObject } from './utils';
-import createFilestamp from './filestamp';
+import createScaffolda from './scaffolda';
 
 const WORKING_DIRECTORY = process.cwd();
 
@@ -21,7 +21,7 @@ type CommandLineVariables = Omit<Args, 'command'>;
 
 function init() {
   return yargs
-    .scriptName('filestamp')
+    .scriptName('scaffolda')
     .usage('$0 [command] [args]')
     .command('$0 [command]', 'Specifies which scaffold command to run', (yargs) => {
       yargs.positional('command', {
@@ -40,7 +40,7 @@ function create(argv: InitialArgs) {
 
     let configObject;
     try {
-      const importedConfig = await import(path.resolve(WORKING_DIRECTORY, 'filestamp.config.js'));
+      const importedConfig = await import(path.resolve(WORKING_DIRECTORY, 'scaffolda.config.js'));
       configObject = (await importedConfig.default()) as Config;
     } catch (err) {
       throw new Error(`Error importing config: ${err}`);
@@ -129,9 +129,11 @@ function getCommandLineVariables(argsObject: Args): CommandLineVariables {
 const argv = init();
 
 const { main, collectProps } = create(argv as InitialArgs);
-const filestamp = createFilestamp();
+
+// TODO: I think this can live somewhere else -> probably would be good to separate CLI from core functionality
+const scaffolda = createScaffolda();
 
 main();
 
-export { createFile, createFolder } from './filestamp';
-export { filestamp, collectProps };
+export { createFile, createFolder } from './scaffolda';
+export { scaffolda, collectProps };

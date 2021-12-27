@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 // TODO: figure out eslint issues
-const { filestamp, collectProps } = require('../dist/main');
+const { scaffolda, collectProps } = require('../dist/main');
 
 const Component = require('./templates/Component');
 const Folder = require('./templates/Folder');
@@ -33,7 +33,7 @@ const componentPrompts = [
 async function handleCommand(command) {
   if (command === 'component') {
     const props = await collectProps(() => componentPrompts);
-    filestamp('./samples', props, Component);
+    scaffolda('./samples', props, Component);
   }
   if (command === 'folder') {
     const props = await collectProps(() => [
@@ -44,7 +44,7 @@ async function handleCommand(command) {
       },
     ]);
 
-    filestamp('./samples', props, Folder);
+    scaffolda('./samples', props, Folder);
   }
 }
 
