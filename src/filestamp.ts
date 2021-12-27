@@ -5,7 +5,7 @@ import { stripIndent } from 'common-tags';
 const cwd = process.cwd();
 
 export interface File<P = any> {
-  (currentDirectory: string, props: P): void;
+  (currentDirectory: string, props: P): { hasError: boolean };
   type: 'FILE';
 }
 
@@ -18,9 +18,9 @@ export default function createFilestamp() {
   let currentDepth = 0;
   const MAX_DEPTH = 9;
 
-  return async function filestamp(
+  return async function filestamp<P = any>(
     directory: string,
-    props: unknown,
+    props: P,
     createFileOrFolder: File | Folder
   ) {
     if (currentDepth >= MAX_DEPTH) {
@@ -29,11 +29,12 @@ export default function createFilestamp() {
 
     const currentDirectory = path.resolve(cwd, directory);
 
-    console.log('current depth', currentDepth);
-    console.log('pathString', currentDirectory);
-
     if (createFileOrFolder.type === 'FILE') {
-      createFileOrFolder(currentDirectory, props);
+      const { hasError } = createFileOrFolder(currentDirectory, props);
+
+      if (hasError) {
+        return;
+      }
     }
     if (createFileOrFolder.type === 'FOLDER') {
       // this is where i think i have to recurse
@@ -45,14 +46,14 @@ export default function createFilestamp() {
         return;
       }
 
-      children.forEach((child: any) => {
+      children.forEach((child) => {
         filestamp(path.join(currentDirectory, folderName), props, child);
       });
     }
   };
 }
 
-export function createFile<P>(
+export function createFile<P = any>(
   contentCreator: (props: P) => string,
   nameCreator: (props: P) => string
 ) {
@@ -60,9 +61,6 @@ export function createFile<P>(
     // get file content
     const fileContent = stripIndent`${contentCreator(props)}`;
     const fileName = nameCreator(props);
-
-    console.log('content', fileContent);
-    console.log('name', fileName);
 
     const filePath = path.join(currentDirectory, fileName);
     const fileExists = fs.existsSync(filePath);
@@ -77,8 +75,11 @@ export function createFile<P>(
       // create file with content depending on previous options
       console.log(`Writing file at ${filePath}`);
       fs.writeFileSync(filePath, fileContent);
+
+      return { hasError: false };
     } else {
-      throw new Error(`File already exists at path ${filePath}`);
+      console.log(`File already exists at ${filePath}.`);
+      return { hasError: true };
     }
   };
 
@@ -88,7 +89,7 @@ export function createFile<P>(
   return fn;
 }
 
-export function createFolder<FolderChildren, P>(
+export function createFolder<FolderChildren, P = any>(
   folderChildren: FolderChildren[] | null,
   nameCreator: (props: P) => string
 ) {
@@ -103,8 +104,6 @@ export function createFolder<FolderChildren, P>(
       // create directory
       console.log(`Writing folder at ${folderPath}`);
       fs.mkdirSync(folderPath, { recursive: true });
-    } else {
-      throw new Error(`Folder already exists at path ${folderPath}`);
     }
 
     // return children

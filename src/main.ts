@@ -71,7 +71,11 @@ function create(argv: InitialArgs) {
     const userPrompts = fn ? fn() : [];
 
     // Execute prompts -> will skip if all prompts overriden through CLI
-    const answers = await prompts(userPrompts);
+    const answers = await prompts(userPrompts, {
+      onCancel: () => {
+        process.exit(1);
+      },
+    });
 
     return answers;
   }
