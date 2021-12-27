@@ -1,11 +1,14 @@
 {
   "name": "scaffolda",
   "version": "0.0.0",
-  "main": "index.js",
+  "main": "dist/main.js",
   "license": "MIT",
   "bin": {
     "scaffolda": "dist/main.js"
   },
+  "files": [
+    "dist"
+  ],
   "types": "dist/main.d.ts",
   "volta": {
     "node": "16.13.1"
