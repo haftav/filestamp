@@ -146,7 +146,7 @@ async function handleCommand(command) {
 ### Starting the Scaffold
 
 ```ts
-  scaffolda(directory: string, props: any, createFileOrFolder: File | Folder | (File | Folder)[] => void;
+  scaffolda(directory: string, props: any, createFileOrFolder: File | Folder | (File | Folder)[]) => void;
 ```
 
 To actually start the scaffolding, invoke the `scaffolda` function and pass it the name of the directory to start the scaffolding, the props you've collected (via CLI arguments and prompts) and the `File` or `Folder` entity (or a list of `File`/`Folder` entities) to scaffold in the specified directory.
