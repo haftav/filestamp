@@ -2,17 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { stripIndent } from 'common-tags';
 
+import { isFileCreator, isFolderCreator, isFileOrFolderList } from './utils';
+import { File, Folder } from './types';
+
 const cwd = process.cwd();
-
-export interface File<P = any> {
-  (currentDirectory: string, props: P): void;
-  type: 'FILE';
-}
-
-export interface Folder<P = any> {
-  (currentDirectory: string, props: P): { children: any[] | null; folderName: string };
-  type: 'FOLDER';
-}
 
 export default function createScaffolda() {
   let currentDepth = 0;
@@ -21,7 +14,8 @@ export default function createScaffolda() {
   return function scaffolda<P = any>(
     directory: string,
     props: P,
-    createFileOrFolder: File | Folder
+    // TODO: name parameter better
+    createFileOrFolder: File | Folder | Array<File | Folder>
   ) {
     if (currentDepth >= MAX_DEPTH) {
       throw new Error('Possible infinite loop reached, throwing error');
@@ -29,12 +23,19 @@ export default function createScaffolda() {
 
     const currentDirectory = path.resolve(cwd, directory);
 
-    if (createFileOrFolder.type === 'FILE') {
+    if (isFileOrFolderList(createFileOrFolder)) {
+      const fileOrFolderList = createFileOrFolder;
+      fileOrFolderList.forEach((fileOrFolder) => {
+        scaffolda(currentDirectory, props, fileOrFolder);
+      });
+    }
+
+    if (isFileCreator(createFileOrFolder)) {
       createFileOrFolder(currentDirectory, props);
     }
 
-    if (createFileOrFolder.type === 'FOLDER') {
-      // this is where i think i have to recurse
+    if (isFolderCreator(createFileOrFolder)) {
+      // if entity is folder, recurse with updated currentDirectory
       const { children, folderName } = createFileOrFolder(currentDirectory, props);
 
       currentDepth += 1;

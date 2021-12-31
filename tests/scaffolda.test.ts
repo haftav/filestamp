@@ -173,7 +173,7 @@ describe('Scaffolda tests', () => {
       const Test = () => <div>test</div>;
 
       export default Test;
-      
+
       function useTestState() {}
       `
     );
@@ -190,6 +190,25 @@ describe('Scaffolda tests', () => {
     const fileExists = fs.existsSync(filePath);
 
     expect(fileExists).toBe(true);
+  });
+
+  it('Scaffolds lists of files or folders', () => {
+    const emptyFolder = createFolder([], () => 'empty');
+    const folderWithFile = createFolder([componentFile], (props) => `${props.name}`);
+
+    scaffolda('./tests/samples', props, [emptyFolder, folderWithFile, componentFile]);
+
+    const folderPath = path.join(__dirname, './samples');
+    const folderExists = fs.existsSync(folderPath);
+
+    expect(folderExists).toBe(true);
+
+    const folderContent = fs.readdirSync(folderPath);
+
+    expect(folderContent.length).toBe(3);
+    expect(folderContent).toContain('empty');
+    expect(folderContent).toContain('Test');
+    expect(folderContent).toContain('Test.jsx');
   });
 
   it("Doesn't overwrite existing content", () => {
