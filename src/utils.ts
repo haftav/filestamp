@@ -38,3 +38,17 @@ export function isFileOrFolderList(maybeArray: unknown): maybeArray is Array<Fil
     Array.isArray(maybeArray) && maybeArray.every((el) => isFileCreator(el) || isFolderCreator(el))
   );
 }
+
+export function isFunction<MaybeFunctionType>(
+  maybeFunction: unknown
+): maybeFunction is MaybeFunctionType {
+  return typeof maybeFunction === 'function';
+}
+
+export function isArray<MaybeArrayType>(maybeArray: unknown): maybeArray is MaybeArrayType {
+  if (typeof maybeArray === 'undefined') {
+    return false;
+  }
+
+  return Array.isArray(maybeArray);
+}

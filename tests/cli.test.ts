@@ -38,4 +38,9 @@ describe('Does things', () => {
     ).toString();
     expect(result).toContain('');
   });
+
+  it('Prompts for props for collectProps array param', () => {
+    const result = execSync(`node ${executablePath} folder-test`, { cwd: __dirname }).toString();
+    expect(result).toContain('What are you naming this resource?');
+  });
 });

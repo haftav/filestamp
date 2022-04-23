@@ -46,6 +46,18 @@ async function handleCommand(command) {
 
     scaffolda('./samples', props, Folder);
   }
+
+  if (command === 'folder-test') {
+    const props = await collectProps([
+      {
+        type: 'text',
+        name: 'name',
+        message: 'What are you naming this resource?',
+      },
+    ]);
+
+    scaffolda('./samples', props, Folder);
+  }
 }
 
 module.exports = async () => {

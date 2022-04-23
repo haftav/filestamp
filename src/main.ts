@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant';
 import path from 'path';
 
 import { Command, Config } from './types';
-import { isConfigObject } from './utils';
+import { isConfigObject, isFunction, isArray } from './utils';
 import createScaffolda from './scaffolda';
 
 const WORKING_DIRECTORY = process.cwd();
@@ -59,18 +59,27 @@ function create(argv: InitialArgs) {
     handleCommand(command);
   }
 
+  type PromptFunction = () => PromptObject[];
+
   // TODO: allow array parameter
-  async function collectProps(fn?: () => PromptObject[]) {
+  async function collectProps(fnOrArray?: PromptFunction | PromptObject[]) {
     // read all variables from CLI
     const cliVariables = getCommandLineVariables(argsObject);
 
     // Override any prompts with variables that were supplied through CLI
     prompts.override(cliVariables);
 
-    // Get list of user prompts
-    const userPrompts = fn ? fn() : [];
+    let userPrompts: PromptObject[];
 
-    // Execute prompts -> will skip if all prompts overriden through CLI
+    if (isFunction<PromptFunction>(fnOrArray)) {
+      userPrompts = fnOrArray();
+    } else if (isArray<PromptObject[]>(fnOrArray)) {
+      userPrompts = fnOrArray;
+    } else {
+      userPrompts = [];
+    }
+
+    // Execute prompts -> will skip if all prompts overridden through CLI
     const answers = await prompts(userPrompts, {
       onCancel: () => {
         process.exit(1);
