@@ -39,13 +39,11 @@ export function isFileOrFolderList(maybeArray: unknown): maybeArray is Array<Fil
   );
 }
 
-export function isFunction<MaybeFunctionType>(
-  maybeFunction: unknown
-): maybeFunction is MaybeFunctionType {
+export function isFunction(maybeFunction: unknown): maybeFunction is (args: any[]) => void {
   return typeof maybeFunction === 'function';
 }
 
-export function isArray<MaybeArrayType>(maybeArray: unknown): maybeArray is MaybeArrayType {
+export function isArray(maybeArray: unknown): maybeArray is any[] {
   if (typeof maybeArray === 'undefined') {
     return false;
   }

@@ -71,9 +71,13 @@ function create(argv: InitialArgs) {
 
     let userPrompts: PromptObject[];
 
-    if (isFunction<PromptFunction>(fnOrArray)) {
+    /* 
+      NOTE: these narrowing functions may need to validate better.
+      There's a possibility of runtime errors if user passes invalid config.
+    */
+    if (isFunction(fnOrArray)) {
       userPrompts = fnOrArray();
-    } else if (isArray<PromptObject[]>(fnOrArray)) {
+    } else if (isArray(fnOrArray)) {
       userPrompts = fnOrArray;
     } else {
       userPrompts = [];
