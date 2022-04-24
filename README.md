@@ -155,6 +155,8 @@ To actually start the scaffolding, invoke the `scaffolda` function and pass it t
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+Follow the `changesets` [base workflow](https://github.com/changesets/changesets/blob/main/packages/cli/README.md#base-workflow) method to handle versioning.
+
 Please make sure to update tests as appropriate.
 
 ## License
