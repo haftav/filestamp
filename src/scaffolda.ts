@@ -57,12 +57,12 @@ export default function createScaffolda() {
 
 export function createFile<P = any>(
   contentCreator: (props: P) => string,
-  nameCreator: (props: P) => string
+  nameCreator: ((props: P) => string) | string
 ) {
   const fn: File = (currentDirectory, props: P) => {
     // get file content
     const fileContent = stripIndent`${contentCreator(props)}`;
-    const fileName = nameCreator(props);
+    const fileName = typeof nameCreator === 'string' ? nameCreator : nameCreator(props);
 
     const filePath = path.join(currentDirectory, fileName);
     const fileExists = fs.existsSync(filePath);
@@ -90,10 +90,10 @@ export function createFile<P = any>(
 
 export function createFolder<FolderChildren, P = any>(
   folderChildren: FolderChildren[] | null,
-  nameCreator: (props: P) => string
+  nameCreator: ((props: P) => string) | string
 ) {
   const fn: Folder = (currentDirectory: string, props: P) => {
-    const folderName = nameCreator(props);
+    const folderName = typeof nameCreator === 'string' ? nameCreator : nameCreator(props);
 
     const folderPath = path.join(currentDirectory, folderName);
     const folderExists = fs.existsSync(folderPath);

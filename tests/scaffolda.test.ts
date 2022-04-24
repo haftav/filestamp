@@ -9,8 +9,15 @@ import createScaffolda, { createFile, createFolder } from '../dist/scaffolda';
 const directoryName = '/samples';
 const pathToDirectory = path.join(__dirname, directoryName);
 
-beforeEach(() => removeTestFiles(pathToDirectory));
-afterEach(() => removeTestFiles(pathToDirectory));
+let scaffolda = createScaffolda();
+
+beforeEach(() => {
+  removeTestFiles(pathToDirectory);
+  scaffolda = createScaffolda();
+});
+afterEach(() => {
+  removeTestFiles(pathToDirectory);
+});
 
 const component = (props: { name: string }) => `
 import * as React from 'react';
@@ -30,6 +37,7 @@ function use${props.name}State() {}
 `;
 
 const componentFile = createFile(component, (props: { name: string }) => `${props.name}.jsx`);
+const componentFileWithStringArg = createFile(component, 'Test.jsx');
 const indexFile = createFile(index, () => 'index.js');
 const hookFile = createFile(hookComponent, () => 'hookFile.js');
 const emptyFolder = createFolder(null, () => 'empty');
@@ -75,13 +83,32 @@ const nestedFolders = createFolder(
   () => 'one'
 );
 
-const scaffolda = createScaffolda();
-
 describe('Scaffolda tests', () => {
   const props = { name: 'Test' };
 
   it('Creates file with specified content and path', async () => {
     scaffolda('./tests/samples', props, componentFile);
+
+    const filePath = path.join(__dirname, './samples/Test.jsx');
+    const fileExists = fs.existsSync(filePath);
+
+    expect(fileExists).toBe(true);
+
+    const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
+
+    expect(content).toMatch(
+      stripIndent`
+      import * as React from 'react';
+
+      const Test = () => <div>test</div>;
+
+      export default Test;
+      `
+    );
+  });
+
+  it('Creates files using string argument', async () => {
+    scaffolda('./tests/samples', props, componentFileWithStringArg);
 
     const filePath = path.join(__dirname, './samples/Test.jsx');
     const fileExists = fs.existsSync(filePath);
@@ -120,6 +147,22 @@ describe('Scaffolda tests', () => {
       [componentFile, indexFile],
       (props) => `${props.name}`
     );
+
+    scaffolda('./tests/samples', props, folderWithComponents);
+
+    const folderPath = path.join(__dirname, './samples/Test');
+    const folderExists = fs.existsSync(folderPath);
+
+    expect(folderExists).toBe(true);
+
+    const folderContent = fs.readdirSync(folderPath);
+    expect(folderContent.length).toBe(2);
+    expect(folderContent).toContain('Test.jsx');
+    expect(folderContent).toContain('index.js');
+  });
+
+  it('Creates folders using string argument', () => {
+    const folderWithComponents = createFolder([componentFile, indexFile], 'Test');
 
     scaffolda('./tests/samples', props, folderWithComponents);
 
