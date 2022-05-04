@@ -3,7 +3,7 @@ import path from 'path';
 import { stripIndent } from 'common-tags';
 
 import { isFileCreator, isFolderCreator, isFileOrFolderList } from './utils';
-import { File, Folder } from './types';
+import { FileCreator, FolderCreator } from './types';
 
 const cwd = process.cwd();
 
@@ -15,7 +15,7 @@ export default function createScaffolda() {
     directory: string,
     props: P,
     // TODO: name parameter better
-    createFileOrFolder: File | Folder | Array<File | Folder>
+    createFileOrFolder: FileCreator | FolderCreator | Array<FileCreator | FolderCreator>
   ) {
     if (currentDepth >= MAX_DEPTH) {
       throw new Error('Possible infinite loop reached, throwing error');
@@ -59,7 +59,7 @@ export function createFile<P = any>(
   contentCreator: (props: P) => string,
   nameCreator: ((props: P) => string) | string
 ) {
-  const fn: File = (currentDirectory, props: P) => {
+  const fn: FileCreator = (currentDirectory, props: P) => {
     // get file content
     const fileContent = stripIndent`${contentCreator(props)}`;
     const fileName = typeof nameCreator === 'string' ? nameCreator : nameCreator(props);
@@ -92,7 +92,7 @@ export function createFolder<FolderChildren, P = any>(
   folderChildren: FolderChildren[] | null,
   nameCreator: ((props: P) => string) | string
 ) {
-  const fn: Folder = (currentDirectory: string, props: P) => {
+  const fn: FolderCreator = (currentDirectory: string, props: P) => {
     const folderName = typeof nameCreator === 'string' ? nameCreator : nameCreator(props);
 
     const folderPath = path.join(currentDirectory, folderName);

@@ -10,12 +10,12 @@ export interface Config {
   handleCommand: (command: string) => any;
 }
 
-export interface File<P = any> {
+export interface FileCreator<P = any> {
   (currentDirectory: string, props: P): void;
   type: 'FILE';
 }
 
-export interface Folder<P = any> {
+export interface FolderCreator<P = any> {
   (currentDirectory: string, props: P): { children: any[] | null; folderName: string };
   type: 'FOLDER';
 }
