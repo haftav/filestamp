@@ -144,9 +144,8 @@ const argv = init();
 const { main, collectProps } = create(argv as InitialArgs);
 
 // TODO: I think this can live somewhere else -> probably would be good to separate CLI from core functionality
-const scaffolda = createScaffolda();
 
 main();
 
-export { createFile, createFolder } from './scaffolda';
-export { scaffolda, collectProps };
+export { default as scaffolda, createFile, createFolder } from './scaffolda';
+export { collectProps };
