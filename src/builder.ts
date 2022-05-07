@@ -49,13 +49,19 @@ export default function createBuilder(cwd: string) {
         }
 
         const actionWrapper = () => {
-          if (!folderExists) {
-            fs.mkdirSync(currentDirectory, { recursive: true });
-          }
           return creatorEntity.action(filePath, props);
         };
 
         // someday have options to overwrite
+
+        // add folder creation to entries if folder doesn't exist
+        if (!folderExists) {
+          entries.push(() => {
+            if (!folderExists) {
+              fs.mkdirSync(currentDirectory, { recursive: true });
+            }
+          });
+        }
 
         // add to entries
         entries.push(actionWrapper);

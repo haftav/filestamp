@@ -31,7 +31,7 @@ export function createFile<P = any>(
   contentCreator: (props: P) => string,
   nameCreator: ((props: P) => string) | string
 ): CreatorType {
-  const fn: FileCreator = (entityPath: string, props: P) => {
+  const action: FileCreator = (entityPath: string, props: P) => {
     // get file content
     const fileContent = stripIndent`${contentCreator(props)}`;
     // create file with content depending on previous options
@@ -40,7 +40,7 @@ export function createFile<P = any>(
   };
 
   return {
-    action: fn,
+    action,
     type: 'FILE',
     nameGetter: (props) => (typeof nameCreator === 'string' ? nameCreator : nameCreator(props)),
   };
@@ -51,13 +51,13 @@ export function createFolder<FolderChildren, P = any>(
   folderChildren: FolderChildren[] | null,
   nameCreator: ((props: P) => string) | string
 ): CreatorType {
-  const fn: FolderCreator = (entityPath: string, props: P) => {
+  const action: FolderCreator = (entityPath: string, props: P) => {
     console.log(`Writing folder at ${entityPath}`);
     fs.mkdirSync(entityPath, { recursive: true });
   };
 
   return {
-    action: fn,
+    action,
     type: 'FOLDER',
     nameGetter: (props) => (typeof nameCreator === 'string' ? nameCreator : nameCreator(props)),
     children: folderChildren,
