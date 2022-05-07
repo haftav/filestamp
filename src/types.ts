@@ -12,10 +12,15 @@ export interface Config {
 
 export interface FileCreator<P = any> {
   (currentDirectory: string, props: P): void;
-  type: 'FILE';
 }
 
 export interface FolderCreator<P = any> {
-  (currentDirectory: string, props: P): { children: any[] | null; folderName: string };
-  type: 'FOLDER';
+  (currentDirectory: string, props: P): void;
+}
+
+export interface CreatorType {
+  action: (currentDirectory: string, props: any) => void;
+  type: string;
+  nameGetter: (props: any) => string;
+  [x: string]: unknown;
 }

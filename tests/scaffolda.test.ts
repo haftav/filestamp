@@ -4,16 +4,13 @@ import { stripIndent } from 'common-tags';
 
 import { removeTestFiles } from './utils';
 
-import createScaffolda, { createFile, createFolder } from '../dist/scaffolda';
+import scaffolda, { createFile, createFolder } from '../dist/scaffolda';
 
 const directoryName = '/samples';
 const pathToDirectory = path.join(__dirname, directoryName);
 
-let scaffolda = createScaffolda();
-
 beforeEach(() => {
   removeTestFiles(pathToDirectory);
-  scaffolda = createScaffolda();
 });
 afterEach(() => {
   removeTestFiles(pathToDirectory);
