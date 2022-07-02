@@ -24,3 +24,14 @@ export interface CreatorType {
   nameGetter: (props: any) => string;
   [x: string]: unknown;
 }
+
+export type Action = () => void;
+
+interface ActionsCreatorParams<T> {
+  currentDirectory: string;
+  props: T;
+}
+
+export interface ActionsCreator<T> {
+  (params: ActionsCreatorParams<T>): Action[];
+}
