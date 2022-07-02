@@ -10,17 +10,20 @@ export interface Config {
   handleCommand: (command: string) => any;
 }
 
-export interface FileCreator<P = any> {
-  (currentDirectory: string, props: P): void;
+export type Action = () => void;
+
+interface ActionsCreatorParams<T> {
+  currentDirectory: string;
+  props: T;
+  builder: Builder<T>;
 }
 
-export interface FolderCreator<P = any> {
-  (currentDirectory: string, props: P): void;
+export interface ActionsCreator<T> {
+  (params: ActionsCreatorParams<T>): Action[];
 }
 
-export interface CreatorType {
-  action: (currentDirectory: string, props: any) => void;
-  type: string;
-  nameGetter: (props: any) => string;
-  [x: string]: unknown;
-}
+export type Builder<T> = (
+  directory: string,
+  props: T,
+  createActions: ActionsCreator<T> | ActionsCreator<T>[]
+) => Action[];

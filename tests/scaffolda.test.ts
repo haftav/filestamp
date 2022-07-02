@@ -125,6 +125,14 @@ describe('Scaffolda tests', () => {
     );
   });
 
+  it('Fails if file already exists', async () => {
+    scaffolda('./tests/samples', props, componentFile);
+
+    const filePath = path.join(__dirname, './samples/Test.jsx');
+
+    expect(() => scaffolda('./tests/samples', props, componentFile)).toThrow();
+  });
+
   it('Creates empty folders', () => {
     const emptyFolder = createFolder(null, (props) => `${props.name}`);
 
@@ -262,6 +270,8 @@ describe('Scaffolda tests', () => {
 
   it('Fails if folder contains invalid content', () => {
     const folderWithComponents = createFolder(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       [componentFile, indexFile, 'i am some invalid content'],
       (props) => `${props.name}`
     );
