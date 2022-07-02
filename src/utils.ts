@@ -1,4 +1,4 @@
-import { Config, CreatorType, FileCreator, FolderCreator } from './types';
+import { Config } from './types';
 
 export function isConfigObject(value: unknown): value is Config {
   const testValue = value as Config;
@@ -15,24 +15,6 @@ export function isConfigObject(value: unknown): value is Config {
   }
 
   if (typeof testValue.handleCommand !== 'function') {
-    return false;
-  }
-
-  return true;
-}
-
-export function isCreator(maybeCreator: unknown): maybeCreator is CreatorType {
-  const creator = maybeCreator as CreatorType;
-
-  if (!('type' in creator)) {
-    return false;
-  }
-
-  if (!('action' in creator) || typeof creator.action !== 'function') {
-    return false;
-  }
-
-  if (!('nameGetter' in creator) || typeof creator.nameGetter !== 'function') {
     return false;
   }
 

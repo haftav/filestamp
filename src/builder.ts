@@ -1,15 +1,13 @@
-import fs from 'fs';
 import path from 'path';
-import { stripIndent } from 'common-tags';
 
-import { isList, isCreator } from './utils';
+import { isList } from './utils';
 
-import { ActionsCreator, Action, CreatorType } from './types';
+import { ActionsCreator, Action } from './types';
 
 const MAX_DEPTH = 9;
 
 export default function createBuilder(cwd: string) {
-  const currentDepth = 0; // TODO: update
+  let currentDepth = 0;
 
   // TODO: fix types
   const entries: Action[] = [];
@@ -26,46 +24,18 @@ export default function createBuilder(cwd: string) {
     const currentDirectory = path.resolve(cwd, directory);
 
     if (isList(createActions)) {
+      currentDepth += 1;
+
       const createActionsList = createActions;
 
       createActionsList.forEach((createActions) => {
         builder(currentDirectory, props, createActions);
       });
     } else {
-      const actions = createActions({ currentDirectory: directory, props });
+      const actions = createActions({ currentDirectory: directory, props, builder });
 
       entries.push(...actions);
-
-      // if (creatorEntity.type === 'FOLDER') {
-      //   // add to entries if folder doesn't exist
-
-      //   const folderName = creatorEntity.nameGetter(props);
-      //   const folderPath = path.join(currentDirectory, folderName);
-      //   const folderExists = fs.existsSync(folderPath);
-
-      //   const actionWrapper = () => {
-      //     return creatorEntity.action(folderPath, props);
-      //   };
-
-      //   if (!folderExists) {
-      //     entries.push(actionWrapper);
-      //   }
-
-      //   if (creatorEntity.children !== null) {
-      //     if (!Array.isArray(creatorEntity.children)) {
-      //       throw new Error('Error: Folder creator must have a valid children argument.');
-      //     }
-
-      //     currentDepth += 1;
-
-      //     (creatorEntity.children as Array<any>).forEach((child) => {
-      //       builder(path.join(currentDirectory, folderName), props, child);
-      //     });
-      //   }
-      // }
     }
-
-    // run other plugins
 
     return entries;
   };

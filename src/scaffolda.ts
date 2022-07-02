@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { stripIndent } from 'common-tags';
 
-import { ActionsCreator, CreatorType, FileCreator, FolderCreator } from './types';
+import { ActionsCreator } from './types';
 
 import createBuilder from './builder';
 
@@ -33,13 +33,10 @@ export function createFile<P = any>(
   nameCreator: ((props: P) => string) | string
 ): ActionsCreator<P> {
   /* 
-    NOTE: i think we need to nest an additional function return here.
-
-    So the process would go like:
+    The process looks like this:
     1. user supplies their props to the plugin
-    2. builder passes current directory information to inner function (that is returned from plugin)
-    3. inner function returns another function that would actually do the action 
-
+    2. builder passes current directory information, props, and builder to inner function (that is returned from plugin)
+    3. inner function returns list of actions 
   */
 
   return function createActions({
@@ -82,21 +79,31 @@ export function createFile<P = any>(
   };
 }
 
-// TODO: name better
-export function createFolder<FolderChildren, P = any>(
-  folderChildren: FolderChildren[] | null,
+export function createFolder<P = any>(
+  folderChildren: ActionsCreator<P>[] | ActionsCreator<P> | null,
   nameCreator: ((props: P) => string) | string
-): CreatorType {
-  const action: FolderCreator = (entityPath: string, props: P) => {
-    console.log(`Writing folder at ${entityPath}`);
-    fs.mkdirSync(entityPath, { recursive: true });
-  };
+): ActionsCreator<P> {
+  return function createActions({ currentDirectory, props, builder }) {
+    const folderName = getName({ name: nameCreator, props });
+    const folderPath = path.join(currentDirectory, folderName);
+    const folderExists = fs.existsSync(folderPath);
 
-  return {
-    action,
-    type: 'FOLDER',
-    nameGetter: (props) => (typeof nameCreator === 'string' ? nameCreator : nameCreator(props)),
-    children: folderChildren,
+    const createFolderAction = () => {
+      console.log(`Writing folder at ${folderPath}`);
+      fs.mkdirSync(folderPath, { recursive: true });
+    };
+
+    const actions = [];
+
+    if (!folderExists) {
+      actions.push(createFolderAction);
+    }
+
+    if (folderChildren) {
+      builder(folderPath, props, folderChildren);
+    }
+
+    return actions;
   };
 }
 

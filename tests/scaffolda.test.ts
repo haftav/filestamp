@@ -133,151 +133,153 @@ describe('Scaffolda tests', () => {
     expect(() => scaffolda('./tests/samples', props, componentFile)).toThrow();
   });
 
-  // it('Creates empty folders', () => {
-  //   const emptyFolder = createFolder(null, (props) => `${props.name}`);
+  it('Creates empty folders', () => {
+    const emptyFolder = createFolder(null, (props) => `${props.name}`);
 
-  //   scaffolda('./tests/samples', props, emptyFolder);
+    scaffolda('./tests/samples', props, emptyFolder);
 
-  //   const folderPath = path.join(__dirname, './samples/Test');
-  //   const folderExists = fs.existsSync(folderPath);
+    const folderPath = path.join(__dirname, './samples/Test');
+    const folderExists = fs.existsSync(folderPath);
 
-  //   expect(folderExists).toBe(true);
+    expect(folderExists).toBe(true);
 
-  //   const folderContent = fs.readdirSync(folderPath);
-  //   expect(folderContent.length).toBe(0);
-  // });
+    const folderContent = fs.readdirSync(folderPath);
+    expect(folderContent.length).toBe(0);
+  });
 
-  // it('Creates folders with files', () => {
-  //   const folderWithComponents = createFolder(
-  //     [componentFile, indexFile],
-  //     (props) => `${props.name}`
-  //   );
+  it('Creates folders with files', () => {
+    const folderWithComponents = createFolder(
+      [componentFile, indexFile],
+      (props) => `${props.name}`
+    );
 
-  //   scaffolda('./tests/samples', props, folderWithComponents);
+    scaffolda('./tests/samples', props, folderWithComponents);
 
-  //   const folderPath = path.join(__dirname, './samples/Test');
-  //   const folderExists = fs.existsSync(folderPath);
+    const folderPath = path.join(__dirname, './samples/Test');
+    const folderExists = fs.existsSync(folderPath);
 
-  //   expect(folderExists).toBe(true);
+    expect(folderExists).toBe(true);
 
-  //   const folderContent = fs.readdirSync(folderPath);
-  //   expect(folderContent.length).toBe(2);
-  //   expect(folderContent).toContain('Test.jsx');
-  //   expect(folderContent).toContain('index.js');
-  // });
+    const folderContent = fs.readdirSync(folderPath);
+    expect(folderContent.length).toBe(2);
+    expect(folderContent).toContain('Test.jsx');
+    expect(folderContent).toContain('index.js');
+  });
 
-  // it('Creates folders using string argument', () => {
-  //   const folderWithComponents = createFolder([componentFile, indexFile], 'Test');
+  it('Creates folders using string argument', () => {
+    const folderWithComponents = createFolder([componentFile, indexFile], 'Test');
 
-  //   scaffolda('./tests/samples', props, folderWithComponents);
+    scaffolda('./tests/samples', props, folderWithComponents);
 
-  //   const folderPath = path.join(__dirname, './samples/Test');
-  //   const folderExists = fs.existsSync(folderPath);
+    const folderPath = path.join(__dirname, './samples/Test');
+    const folderExists = fs.existsSync(folderPath);
 
-  //   expect(folderExists).toBe(true);
+    expect(folderExists).toBe(true);
 
-  //   const folderContent = fs.readdirSync(folderPath);
-  //   expect(folderContent.length).toBe(2);
-  //   expect(folderContent).toContain('Test.jsx');
-  //   expect(folderContent).toContain('index.js');
-  // });
+    const folderContent = fs.readdirSync(folderPath);
+    expect(folderContent.length).toBe(2);
+    expect(folderContent).toContain('Test.jsx');
+    expect(folderContent).toContain('index.js');
+  });
 
-  // it('Creates folders with mixed content', () => {
-  //   const folderWithComponentsAndSubfolders = createFolder(
-  //     [componentFile, indexFile, emptyFolder],
-  //     (props) => `${props.name}`
-  //   );
+  it('Creates folders with mixed content', () => {
+    const folderWithComponentsAndSubfolders = createFolder(
+      [componentFile, indexFile, emptyFolder],
+      (props) => `${props.name}`
+    );
 
-  //   scaffolda('./tests/samples', props, folderWithComponentsAndSubfolders);
+    scaffolda('./tests/samples', props, folderWithComponentsAndSubfolders);
 
-  //   const folderPath = path.join(__dirname, './samples/Test');
-  //   const folderExists = fs.existsSync(folderPath);
+    const folderPath = path.join(__dirname, './samples/Test');
+    const folderExists = fs.existsSync(folderPath);
 
-  //   expect(folderExists).toBe(true);
+    expect(folderExists).toBe(true);
 
-  //   const folderContent = fs.readdirSync(folderPath);
-  //   expect(folderContent.length).toBe(3);
-  //   expect(folderContent).toContain('Test.jsx');
-  //   expect(folderContent).toContain('index.js');
-  //   expect(folderContent).toContain('empty');
-  // });
+    const folderContent = fs.readdirSync(folderPath);
+    expect(folderContent.length).toBe(3);
+    expect(folderContent).toContain('Test.jsx');
+    expect(folderContent).toContain('index.js');
+    expect(folderContent).toContain('empty');
+  });
 
-  // it('Lets you nest content in content templates', () => {
-  //   const folder = createFolder([hookFile], (props) => `${props.name}`);
+  it('Lets you nest content in content templates', () => {
+    const folder = createFolder([hookFile], (props) => `${props.name}`);
 
-  //   scaffolda('./tests/samples', props, folder);
+    scaffolda('./tests/samples', props, folder);
 
-  //   const filePath = path.join(__dirname, './samples/Test/hookFile.js');
-  //   const fileExists = fs.existsSync(filePath);
+    const filePath = path.join(__dirname, './samples/Test/hookFile.js');
+    const fileExists = fs.existsSync(filePath);
 
-  //   expect(fileExists).toBe(true);
+    expect(fileExists).toBe(true);
 
-  //   const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
+    const content = fs.readFileSync(filePath, { encoding: 'utf-8' });
 
-  //   expect(content).toMatch(
-  //     stripIndent`
-  //     import * as React from 'react';
+    expect(content).toMatch(
+      stripIndent`
+      import * as React from 'react';
 
-  //     const Test = () => <div>test</div>;
+      const Test = () => <div>test</div>;
 
-  //     export default Test;
+      export default Test;
 
-  //     function useTestState() {}
-  //     `
-  //   );
-  // });
+      function useTestState() {}
+      `
+    );
+  });
 
-  // it('Creates files in already existing folders', () => {
-  //   fs.mkdirSync(path.join(__dirname, './samples/Test'), { recursive: true });
+  it('Creates files in already existing folders', () => {
+    fs.mkdirSync(path.join(__dirname, './samples/Test'), { recursive: true });
 
-  //   const folder = createFolder([componentFile], (props) => `${props.name}`);
+    const folder = createFolder([componentFile], (props) => `${props.name}`);
 
-  //   scaffolda('./tests/samples', props, folder);
+    scaffolda('./tests/samples', props, folder);
 
-  //   const filePath = path.join(__dirname, './samples/Test/Test.jsx');
-  //   const fileExists = fs.existsSync(filePath);
+    const filePath = path.join(__dirname, './samples/Test/Test.jsx');
+    const fileExists = fs.existsSync(filePath);
 
-  //   expect(fileExists).toBe(true);
-  // });
+    expect(fileExists).toBe(true);
+  });
 
-  // it('Scaffolds lists of files or folders', () => {
-  //   const emptyFolder = createFolder([], () => 'empty');
-  //   const folderWithFile = createFolder([componentFile], (props) => `${props.name}`);
+  it('Scaffolds lists of files or folders', () => {
+    const emptyFolder = createFolder([], () => 'empty');
+    const folderWithFile = createFolder([componentFile], (props) => `${props.name}`);
 
-  //   scaffolda('./tests/samples', props, [emptyFolder, folderWithFile, componentFile]);
+    scaffolda('./tests/samples', props, [emptyFolder, folderWithFile, componentFile]);
 
-  //   const folderPath = path.join(__dirname, './samples');
-  //   const folderExists = fs.existsSync(folderPath);
+    const folderPath = path.join(__dirname, './samples');
+    const folderExists = fs.existsSync(folderPath);
 
-  //   expect(folderExists).toBe(true);
+    expect(folderExists).toBe(true);
 
-  //   const folderContent = fs.readdirSync(folderPath);
+    const folderContent = fs.readdirSync(folderPath);
 
-  //   expect(folderContent.length).toBe(3);
-  //   expect(folderContent).toContain('empty');
-  //   expect(folderContent).toContain('Test');
-  //   expect(folderContent).toContain('Test.jsx');
-  // });
+    expect(folderContent.length).toBe(3);
+    expect(folderContent).toContain('empty');
+    expect(folderContent).toContain('Test');
+    expect(folderContent).toContain('Test.jsx');
+  });
 
-  // it("Doesn't overwrite existing content", () => {
-  //   fs.mkdirSync(path.join(__dirname, './samples/Test'), { recursive: true });
-  //   fs.writeFileSync(path.join(__dirname, './samples/Test/Test.jsx'), '');
+  it("Doesn't overwrite existing content", () => {
+    fs.mkdirSync(path.join(__dirname, './samples/Test'), { recursive: true });
+    fs.writeFileSync(path.join(__dirname, './samples/Test/Test.jsx'), '');
 
-  //   const folder = createFolder([componentFile], (props) => `${props.name}`);
+    const folder = createFolder([componentFile], (props) => `${props.name}`);
 
-  //   expect(() => scaffolda('./tests/samples', props, folder)).toThrow();
-  // });
+    expect(() => scaffolda('./tests/samples', props, folder)).toThrow();
+  });
 
-  // it('Fails if folder contains invalid content', () => {
-  //   const folderWithComponents = createFolder(
-  //     [componentFile, indexFile, 'i am some invalid content'],
-  //     (props) => `${props.name}`
-  //   );
+  it('Fails if folder contains invalid content', () => {
+    const folderWithComponents = createFolder(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      [componentFile, indexFile, 'i am some invalid content'],
+      (props) => `${props.name}`
+    );
 
-  //   expect(() => scaffolda('./tests/samples', props, folderWithComponents)).toThrow();
-  // });
+    expect(() => scaffolda('./tests/samples', props, folderWithComponents)).toThrow();
+  });
 
-  // it('Fails on possible infinite recursion', () => {
-  //   expect(() => scaffolda('./tests/samples', props, nestedFolders)).toThrow();
-  // });
+  it('Fails on possible infinite recursion', () => {
+    expect(() => scaffolda('./tests/samples', props, nestedFolders)).toThrow();
+  });
 });
