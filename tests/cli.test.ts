@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 
 import { removeTestFiles } from './utils';
 
-const executablePath = path.join(__dirname, '..', 'dist/main.js');
+const executablePath = path.join(__dirname, '..', 'dist/cli.js');
 
 const directoryName = '/samples';
 const pathToDirectory = path.join(__dirname, directoryName);

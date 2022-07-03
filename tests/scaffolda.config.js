@@ -1,7 +1,8 @@
 /* eslint-disable */
 
 // TODO: figure out eslint issues
-const { scaffolda, collectProps } = require('../dist/main');
+const { scaffolda } = require('../dist');
+const { collectProps } = require('../dist/cli');
 
 const Component = require('./templates/Component');
 const Folder = require('./templates/Folder');

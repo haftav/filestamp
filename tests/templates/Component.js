@@ -1,5 +1,5 @@
 /* eslint-disable */
-const { createFile } = require('../../dist/main');
+const { createFile } = require('../../dist');
 
 function Component(props) {
   return `
