@@ -2,6 +2,10 @@
   "name": "scaffolda",
   "version": "0.5.0",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./cli": "./dist/cli.js"
+  },
   "license": "MIT",
   "bin": {
     "scaffolda": "dist/cli.js"
