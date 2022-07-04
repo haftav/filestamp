@@ -1,5 +1,11 @@
 # scaffolda
 
+## 0.6.0
+
+### Minor Changes
+
+- Better separating CLI logic from core
+
 ## 0.5.0
 
 ### Minor Changes
