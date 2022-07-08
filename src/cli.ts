@@ -43,6 +43,7 @@ function create(argv: InitialArgs) {
 
     let configObject;
     try {
+      // TODO: figure out better config resolution
       const importedConfig = await import(path.resolve(WORKING_DIRECTORY, 'scaffolda.config.js'));
       configObject = (await importedConfig.default()) as Config;
     } catch (err) {

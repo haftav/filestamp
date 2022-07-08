@@ -1,11 +1,10 @@
 /* eslint-disable */
 
 // TODO: figure out eslint issues
-const { scaffolda } = require('../dist');
-const { collectProps } = require('../dist/cli');
+import { scaffolda, collectProps } from '../../dist';
 
-const Component = require('./templates/Component');
-const Folder = require('./templates/Folder');
+import Component from '../templates/Component';
+import Folder from '../templates/Folder';
 
 const commands = [
   { title: 'Component', value: 'component' },
@@ -61,6 +60,6 @@ async function handleCommand(command) {
   }
 }
 
-module.exports = async () => {
+export default async () => {
   return { commands, handleCommand };
 };
