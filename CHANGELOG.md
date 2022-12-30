@@ -1,5 +1,11 @@
 # scaffolda
 
+## 0.6.2
+
+### Patch Changes
+
+- Fix types
+
 ## 0.6.1
 
 ### Patch Changes

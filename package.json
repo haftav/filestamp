@@ -1,6 +1,6 @@
 {
   "name": "scaffolda",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
@@ -13,7 +13,7 @@
   "files": [
     "dist"
   ],
-  "types": "dist/main.d.ts",
+  "types": "dist/index.d.ts",
   "volta": {
     "node": "16.13.1"
   },
