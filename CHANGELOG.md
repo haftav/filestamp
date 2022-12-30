@@ -1,5 +1,11 @@
 # scaffolda
 
+## 0.6.1
+
+### Patch Changes
+
+- Remove CLI code from main entrypoint
+
 ## 0.6.0
 
 ### Minor Changes
